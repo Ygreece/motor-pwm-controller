@@ -21,6 +21,8 @@
 
 ## 系统框图
 
+![system-block-diagram.drawio](C:\Users\greece\Downloads\system-block-diagram.drawio.png)
+
 **主回路 (PWM调速)**
 
 ```mermaid
@@ -28,7 +30,7 @@ graph TD
     A["12V直流电源"] --> B["LM7805 稳压"]
     B --> C["NE555 多谐振荡器 (f=3~5kHz, D=30~70%)"]
     C --> D["前置放大"]
-    D --> E["IRF540N MOSFET"]
+    D --> E["IRL540N 逻辑电平MOSFET"]
     E --> F["直流电机 12V/0.5A + 遮光码盘"]
     E --> G["1N4007 续流二极管"]
 ```
@@ -55,9 +57,7 @@ graph TD
     C --> F["清零脉冲 (清零计数器)"]
 ```
 
-> 📐 三条回路之间的连接关系详见 [system-block-diagram.drawio](docs/system-block-diagram.drawio)（用 [Draw.io](https://app.diagrams.net/) 打开）
-
-## 设计要求
+> 设计要求
 
 1. **PWM发生器** — 多谐振荡器，频率3~5kHz，占空比30%~70%
 2. **功率放大器** — 电机额定电压≤12V，额定电流≤0.5A

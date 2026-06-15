@@ -53,7 +53,9 @@
 motor-pwm-controller/
 ├── README.md           # 项目说明
 ├── docs/               # 设计文档
-│   └── design.md       # 详细设计方案
+│   ├── design.md       # 详细设计方案
+│   ├── bom.md          # 器件清单
+│   └── progress.md     # 进度跟踪
 ├── simulation/         # 仿真文件 (Multisim)
 ├── hardware/           # 硬件设计 (嘉立创EDA)
 │   ├── schematic/      # 原理图
@@ -73,11 +75,12 @@ motor-pwm-controller/
 - [x] 系统框图分析
 - [x] 模块划分
 - [x] 初步器件选型
-- [ ] NE555参数计算
+- [x] NE555参数计算
 - [ ] 功率放大器设计
 - [ ] 转速检测电路设计
 - [ ] 时序控制逻辑设计
 - [ ] 计数显示电路设计
 - [ ] 完整原理图绘制
 - [ ] 仿真验证
-- [ ] BOM最终确认
+- [x] BOM最终确认
+- [x] 确认PCB方案（嘉立创EDA）

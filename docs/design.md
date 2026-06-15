@@ -6,14 +6,47 @@
 
 系统由三条回路组成：**主回路（PWM调速）**、**测速回路（转速检测与显示）**、**控制回路（时序基准）**。
 
-> 📐 **专业框图：** [system-block-diagram.drawio](system-block-diagram.drawio)（用 [Draw.io](https://app.diagrams.net/) 打开编辑）
+> 📐 **专业框图源文件：** [system-block-diagram.drawio](system-block-diagram.drawio)（用 [Draw.io](https://app.diagrams.net/) 打开编辑）
 
+```mermaid
+graph LR
+    subgraph 主回路["⚡ 主回路 (PWM调速)"]
+        A[12V电源] --> B[LM7805<br>12V→5V]
+        B --> C[NE555<br>多谐振荡器<br>f=3~5kHz, D=30~70%]
+        C --> D[前置放大]
+        D --> E[IRF540N<br>MOSFET功率放大]
+        E --> F[直流电机<br>12V/0.5A]
+    end
+
+    subgraph 测速回路["📏 测速回路 (转速检测与显示)"]
+        G[槽型光电传感器] --> H[74HC14<br>施密特触发器]
+        H --> I[闸门<br>74HC08与门]
+        I --> J[CD4518<br>BCD计数器]
+        J --> K[CD4511<br>BCD-7段译码]
+        K --> L[2位数码管<br>00~99 r/s]
+    end
+
+    subgraph 控制回路["⏱️ 控制回路 (时序基准)"]
+        M[32.768kHz晶振] --> N[CD4060<br>14级分频→2Hz]
+        N --> O[74HC74<br>D触发器→1Hz]
+        O --> P[闸门使能]
+        O --> Q[锁存脉冲]
+        O --> R[清零脉冲]
+    end
+
+    F -.->|遮光码盘| G
+    P -.->|使能| I
+    Q -.->|LE| K
+    R -.->|CR| J
 ```
-三条回路概览：
 
-主回路 (PWM调速)：  12V电源 → LM7805 → NE555 → 前置放大 → IRF540N → 直流电机
-测速回路 (检测显示)：光电传感器 → 74HC14 → 闸门 → CD4518 → CD4511 → 数码管
-控制回路 (时序基准)：32.768kHz晶振 → CD4060 → 74HC74 → 闸门/锁存/清零
+```mermaid
+graph TB
+    subgraph 时序["🔄 时序关系 (每2秒一个周期)"]
+        T1["闸门使能：高电平1秒（计数窗口）"] --> T2["锁存脉冲：采样结束后锁存显示值"]
+        T2 --> T3["清零脉冲：锁存后清零计数器"]
+        T3 --> T1
+    end
 ```
 
 ### 1.2 信号流分析

@@ -21,39 +21,41 @@
 
 ## 系统框图
 
+**主回路 (PWM调速)**
+
 ```mermaid
-graph LR
-    subgraph S1["主回路 - PWM调速"]
-        A["12V电源"] --> B["LM7805\n12V转5V"]
-        B --> C["NE555\n多谐振荡器\nf=3~5kHz"]
-        C --> D["前置放大"]
-        D --> E["IRF540N\nMOSFET"]
-        E --> F["直流电机\n12V/0.5A"]
-    end
-
-    subgraph S2["测速回路 - 转速检测与显示"]
-        G["光电传感器"] --> H["74HC14\n施密特触发器"]
-        H --> I["闸门\n74HC08"]
-        I --> J["CD4518\nBCD计数器"]
-        J --> K["CD4511\nBCD-7段译码"]
-        K --> L["2位数码管\n00-99 r/s"]
-    end
-
-    subgraph S3["控制回路 - 时序基准"]
-        M["32.768kHz晶振"] --> N["CD4060\n14级分频"]
-        N --> O["74HC74\nD触发器分频"]
-        O --> P["闸门使能 1Hz"]
-        O --> Q["锁存脉冲"]
-        O --> R["清零脉冲"]
-    end
-
-    F -.->|遮光码盘| G
-    P -.->|使能| I
-    Q -.->|LE| K
-    R -.->|CR| J
+graph TD
+    A["12V直流电源"] --> B["LM7805\n12V转5V稳压"]
+    B --> C["NE555 多谐振荡器\n频率 3~5kHz\n占空比 30%~70%"]
+    C --> D["前置放大"]
+    D --> E["IRF540N MOSFET\n功率放大"]
+    E --> F["直流电机 12V/0.5A\n带遮光码盘"]
+    E --> G["1N4007 续流二极管\n反向并联保护电机"]
 ```
 
-> 📐 详细版：[system-block-diagram.drawio](docs/system-block-diagram.drawio)（用 [Draw.io](https://app.diagrams.net/) 打开编辑）
+**测速回路 (转速检测与显示)**
+
+```mermaid
+graph TD
+    A["槽型光电传感器\n遮光码盘产生脉冲"] --> B["74HC14 施密特触发器\n波形整形为标准方波"]
+    B --> C["74HC08 与门\n闸门控制"]
+    C --> D["CD4518 BCD计数器\n2位十进制计数"]
+    D --> E["CD4511 BCD-7段译码器\n含锁存功能"]
+    E --> F["2位共阴极数码管\n显示 00~99 r/s"]
+```
+
+**控制回路 (时序基准)**
+
+```mermaid
+graph TD
+    A["32.768kHz 晶振"] --> B["CD4060\n14级二分频\n输出 2Hz"]
+    B --> C["74HC74 D触发器\n二分频输出 1Hz"]
+    C --> D["闸门使能信号\n高电平 1秒 = 采样窗口"]
+    C --> E["锁存脉冲\n采样结束后锁存显示值"]
+    C --> F["清零脉冲\n锁存后清零计数器"]
+```
+
+> 📐 三条回路之间的连接关系详见 [system-block-diagram.drawio](docs/system-block-diagram.drawio)（用 [Draw.io](https://app.diagrams.net/) 打开）
 
 ## 设计要求
 

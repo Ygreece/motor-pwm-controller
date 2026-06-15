@@ -1,0 +1,22 @@
+# 仿真文件临时文件
+*.tmp
+*.bak
+*.log
+
+# PCB设计临时文件
+*.bck
+*.dsn
+
+# Office临时文件
+~$*.docx
+~$*.pptx
+~$*.xlsx
+
+# 系统文件
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# IDE文件
+.vscode/
+.idea/

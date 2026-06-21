@@ -20,3 +20,6 @@ Desktop.ini
 # IDE文件
 .vscode/
 .idea/
+
+# 本地报告（含个人信息，不上传）
+report/
